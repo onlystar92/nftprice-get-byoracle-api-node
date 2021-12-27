@@ -10,55 +10,22 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       nftID: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      usdPrice: {
         type: Sequelize.STRING,
       },
-      usdPrice0: {
-        type: Sequelize.STRING,
+      priceIndex: {
+        type: Sequelize.INTEGER,
       },
-      usdPrice1: {
-        type: Sequelize.STRING,
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
       },
-      usdPrice2: {
-        type: Sequelize.STRING,
-      },
-      usdPrice3: {
-        type: Sequelize.STRING,
-      },
-      usdPrice4: {
-        type: Sequelize.STRING,
-      },
-      usdPrice5: {
-        type: Sequelize.STRING,
-      },
-      usdPrice6: {
-        type: Sequelize.STRING,
-      },
-      usdPrice7: {
-        type: Sequelize.STRING,
-      },
-      etherPrice0: {
-        type: Sequelize.STRING,
-      },
-      etherPrice1: {
-        type: Sequelize.STRING,
-      },
-      etherPrice2: {
-        type: Sequelize.STRING,
-      },
-      etherPrice3: {
-        type: Sequelize.STRING,
-      },
-      etherPrice4: {
-        type: Sequelize.STRING,
-      },
-      etherPrice5: {
-        type: Sequelize.STRING,
-      },
-      etherPrice6: {
-        type: Sequelize.STRING,
-      },
-      etherPrice7: {
-        type: Sequelize.STRING,
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
       },
     }),
   down: (queryInterface, Sequelize) => queryInterface.dropTable('Prices'),

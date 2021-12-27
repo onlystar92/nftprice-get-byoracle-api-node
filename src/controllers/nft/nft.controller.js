@@ -10,6 +10,7 @@ export const allNfts = async (req, res) => {
       offset: (page - 1) * limit,
       limit,
     });
+
     return successResponse(req, res, { nfts });
   } catch (error) {
     return errorResponse(req, res, error.message);
@@ -18,20 +19,21 @@ export const allNfts = async (req, res) => {
 
 export const addNft = async (req, res) => {
   try {
-    const { name, contract, tokenId } = req.body;
+    const { name, contract } = req.body;
 
     const nft = await Nft.findOne({
-      where: { contract, tokenId, name },
+      where: { contract, name },
     });
 
     if (nft) {
-      throw new Error('NFT already exists with same contract and tokenId');
+      throw new Error('NFT already exists with same contract');
     }
 
     const payload = {
       contract,
-      tokenId,
       name,
+      updatedAt: new Date(),
+      createdAt: new Date(),
     };
 
     await Nft.create(payload);
@@ -43,10 +45,10 @@ export const addNft = async (req, res) => {
 
 export const removeNft = async (req, res) => {
   try {
-    const { name, contract, tokenId } = req.body;
+    const { name, contract } = req.body;
 
     const nft = await Nft.findOne({
-      where: { contract, tokenId, name },
+      where: { contract, name },
     });
 
     if (!nft) {

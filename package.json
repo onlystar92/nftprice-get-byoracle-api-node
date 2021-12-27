@@ -33,6 +33,7 @@
     "jsonwebtoken": "^8.5.1",
     "mock-express-response": "^0.2.2",
     "mysql2": "^1.6.5",
+    "node-cron": "^3.0.0",
     "nodemon": "^1.19.0",
     "os": "^0.1.1",
     "pg": "^8.7.1",

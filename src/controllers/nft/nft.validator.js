@@ -4,7 +4,6 @@ export const addNft = {
   body: {
     name: Joi.string().required(),
     contract: Joi.string().required(),
-    tokenId: Joi.string().required(),
   },
 };
 
@@ -12,6 +11,5 @@ export const removeNft = {
   body: {
     name: Joi.string().required(),
     contract: Joi.string().required(),
-    tokenId: Joi.string().required(),
   },
 };
