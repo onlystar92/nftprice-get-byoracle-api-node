@@ -5,9 +5,8 @@ const dotenv = require('dotenv');
 const cluster = require('cluster');
 const numCores = require('os').cpus().length;
 const app = require('./app');
-const cronJob = require('./src/cron/job');
-
-console.log('===>cronJob', cronJob);
+const dbCronJob = require('./src/cron/database');
+const contractCronJob = require('./src/cron/contract');
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (uncaughtExc) => {
@@ -65,7 +64,8 @@ const setUpExpress = () => {
 
   const server = app.listen(port, () => {
     console.log(`App running on port ${chalk.greenBright(port)}...`);
-    cronJob.start();
+    // dbCronJob.start();
+    contractCronJob.start();
   });
 
   // In case of an error
@@ -80,7 +80,8 @@ const setUpExpress = () => {
     console.log(chalk.bgRed('UNHANDLED REJECTION! � Shutting down...'));
     console.log(err.name, err.message);
     // Close server & exit process
-    cronJob.destroy();
+    // dbCronJob.destroy();
+    contractCronJob.destroy();
     server.close(() => {
       process.exit(1);
     });

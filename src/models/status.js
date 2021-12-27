@@ -1,15 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
-  const Nft = sequelize.define('Nft', {
-    name: {
+  const Status = sequelize.define('Status', {
+    msg: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    contract: {
-      type: DataTypes.STRING,
-    },
   });
-  Nft.associate = function (models) {
+  Status.associate = function (models) {
     // associations can be defined here
   };
-  return Nft;
+  return Status;
 };

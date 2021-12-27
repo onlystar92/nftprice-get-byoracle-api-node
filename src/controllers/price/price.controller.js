@@ -23,22 +23,10 @@ export const addPrice = async (req, res) => {
 
     const payload = {
       nftID,
-      usdPrice0: '0',
-      usdPrice1: '0',
-      usdPrice2: '0',
-      usdPrice3: '0',
-      usdPrice4: '0',
-      usdPrice5: '0',
-      usdPrice6: '0',
-      usdPrice7: '0',
-      etherPrice0: '0',
-      etherPrice1: '0',
-      etherPrice2: '0',
-      etherPrice3: '0',
-      etherPrice4: '0',
-      etherPrice5: '0',
-      etherPrice6: '0',
-      etherPrice7: '0',
+      usdPrice: '0,0,0,0,0,0,0,0',
+      priceIndex: 0,
+      updatedAt: new Date(),
+      createdAt: new Date(),
     };
 
     await Price.create(payload);
@@ -50,25 +38,7 @@ export const addPrice = async (req, res) => {
 
 export const setPrice = async (req, res) => {
   try {
-    const {
-      nftID,
-      usdPrice0,
-      usdPrice1,
-      usdPrice2,
-      usdPrice3,
-      usdPrice4,
-      usdPrice5,
-      usdPrice6,
-      usdPrice7,
-      etherPrice0,
-      etherPrice1,
-      etherPrice2,
-      etherPrice3,
-      etherPrice4,
-      etherPrice5,
-      etherPrice6,
-      etherPrice7,
-    } = req.body;
+    const { nftID, usdPrice, priceIndex } = req.body;
 
     const price = await Price.findOne({
       where: { nftID },
@@ -79,22 +49,9 @@ export const setPrice = async (req, res) => {
     }
 
     await price.update({
-      usdPrice0,
-      usdPrice1,
-      usdPrice2,
-      usdPrice3,
-      usdPrice4,
-      usdPrice5,
-      usdPrice6,
-      usdPrice7,
-      etherPrice0,
-      etherPrice1,
-      etherPrice2,
-      etherPrice3,
-      etherPrice4,
-      etherPrice5,
-      etherPrice6,
-      etherPrice7,
+      usdPrice,
+      priceIndex,
+      updatedAt: new Date(),
     });
     return successResponse(req, res, {});
   } catch (error) {
