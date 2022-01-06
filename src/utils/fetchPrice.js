@@ -2,8 +2,8 @@ import { GraphQLClient, gql } from 'graphql-request';
 
 require('dotenv').config();
 
-const fetchPrice = async () => {
-  const endpoint = 'https://developers.icy.tools/graphql';
+const fetchPrice = async (contract, searchDate) => {
+  const endpoint = 'https://graphql.icy.tools/graphql';
 
   const graphQLClient = new GraphQLClient(endpoint, {
     headers: {
@@ -13,14 +13,14 @@ const fetchPrice = async () => {
 
   const query = gql`
     query Contract {
-      contract(address: "0x75e95ba5997eb235f40ecf8347cdb11f18ff640b") {
+      contract(address: "${contract}") {
         address
         __typename
         tokenStandard
         ... on ERC721Contract {
           name
           isVerified
-          stats(timeRange: { gte: "2021-01-01T00:00:00+0000" }) {
+          stats(timeRange: { gte: "${searchDate}" }) {
             totalSales
             floor
             average

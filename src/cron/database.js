@@ -5,6 +5,7 @@ import cron from 'node-cron';
 
 import { Nft, Price, Status } from '../models';
 import fetchPrice from '../utils/fetchPrice';
+import checkPrice from '../utils/checkPrice';
 
 const updateTokenPrice = async (nft) => {
   const nftPrice = await Price.findOne({
@@ -12,7 +13,6 @@ const updateTokenPrice = async (nft) => {
   });
 
   if (!nftPrice) {
-    // create new price record in databse
     await Price.create({
       nft: nft.id,
       usdPrice: '0,0,0,0,0,0,0,0',
@@ -23,19 +23,22 @@ const updateTokenPrice = async (nft) => {
   }
 
   try {
-    let newUsdPrice = nftPrice.usdPrice;
-    const newPriceIndex = (nftPrice.priceIndex + 1) % 8;
-    const usdPriceArray = newUsdPrice.split(',');
+    let newUsdPriceString = nftPrice.usdPrice;
+    const index = (nftPrice.priceIndex + 1) % 8;
+    const usdPriceArrayString = newUsdPrice.split(',');
     const newPrice = await fetchPrice(nft.contract);
 
-    if (usdPriceArray[newPriceIndex] !== newPrice.toString()) {
-      usdPriceArray[newPriceIndex] = newPrice.toString();
-      newUsdPrice = usdPriceArray.join(',');
+    const needUpdate = checkPrice(
+      parseFloat(usdPriceArrayString[index]),
+      newPrice,
+      nftPrice.updatedAt
+    );
 
-      if (newPrice > 0) {
-        // check if this is USD or Ether, decimals
-        // call write smart contract logic with new price here
-      }
+    if (needUpdate) {
+      usdPriceArrayString[index] = newPrice.toString();
+      newUsdPriceString = usdPriceArrayString.join(',');
+
+      /// TODO: Chang: write `newPrice` into oracle contract
     }
 
     await nftPrice.update({
@@ -75,7 +78,17 @@ const retrievNfts = async () => {
   return allNfts;
 };
 
-const databaseTask = cron.schedule('*/10 * * * * *', async () => {
+// "* * * * * *"
+//  | | | | | |
+//  | | | | | |
+//  | | | | | day of week
+//  | | | | month
+//  | | | day of month
+//  | | hour
+//  | minute
+//  second(optional)
+
+const databaseTask = cron.schedule('* * 1 * * *', async () => {
   const allNfts = await retrievNfts();
   for (let i = 0; i < allNfts.length; i++) {
     await updateTokenPrice(allNfts[i]);
