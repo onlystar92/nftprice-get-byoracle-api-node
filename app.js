@@ -1,3 +1,6 @@
+/* eslint-disable comma-dangle */
+/* eslint-disable operator-linebreak */
+
 import express from 'express';
 import dotenv from 'dotenv';
 
@@ -21,10 +24,6 @@ app.use(cors());
 app.use(bodyParser.json());
 
 function validateAuthorization(req) {
-  console.log(
-    req.header('Authorization'),
-    req.header('Authorization') === process.env.SECRET_KEY
-  );
   return (
     req.header('Authorization') &&
     req.header('Authorization') === process.env.SECRET_KEY

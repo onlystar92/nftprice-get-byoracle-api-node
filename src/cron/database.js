@@ -4,12 +4,7 @@
 import cron from 'node-cron';
 
 import { Nft, Price, Status } from '../models';
-
-const retrieveNFTFloorPrice = async (contract) => {
-  // TODO: implement grpahlql API to retrive tokenPrice of contract
-  console.log('====>contract', contract);
-  return 1;
-};
+import fetchPrice from '../utils/fetchPrice';
 
 const updateTokenPrice = async (nft) => {
   const nftPrice = await Price.findOne({
@@ -17,6 +12,7 @@ const updateTokenPrice = async (nft) => {
   });
 
   if (!nftPrice) {
+    // create new price record in databse
     await Price.create({
       nft: nft.id,
       usdPrice: '0,0,0,0,0,0,0,0',
@@ -30,12 +26,16 @@ const updateTokenPrice = async (nft) => {
     let newUsdPrice = nftPrice.usdPrice;
     const newPriceIndex = (nftPrice.priceIndex + 1) % 8;
     const usdPriceArray = newUsdPrice.split(',');
-
-    const newPrice = await retrieveNFTFloorPrice(nft.contract);
+    const newPrice = await fetchPrice(nft.contract);
 
     if (usdPriceArray[newPriceIndex] !== newPrice.toString()) {
       usdPriceArray[newPriceIndex] = newPrice.toString();
       newUsdPrice = usdPriceArray.join(',');
+
+      if (newPrice > 0) {
+        // check if this is USD or Ether, decimals
+        // call write smart contract logic with new price here
+      }
     }
 
     await nftPrice.update({

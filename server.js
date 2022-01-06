@@ -5,8 +5,8 @@ const dotenv = require('dotenv');
 const cluster = require('cluster');
 const numCores = require('os').cpus().length;
 const app = require('./app');
-const dbCronJob = require('./src/cron/database');
-const contractCronJob = require('./src/cron/contract');
+// const dbCronJob = require('./src/cron/database');
+// const contractCronJob = require('./src/cron/contract');
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (uncaughtExc) => {
@@ -65,7 +65,7 @@ const setUpExpress = () => {
   const server = app.listen(port, () => {
     console.log(`App running on port ${chalk.greenBright(port)}...`);
     // dbCronJob.start();
-    contractCronJob.start();
+    // contractCronJob.start();
   });
 
   // In case of an error
@@ -81,7 +81,7 @@ const setUpExpress = () => {
     console.log(err.name, err.message);
     // Close server & exit process
     // dbCronJob.destroy();
-    contractCronJob.destroy();
+    // contractCronJob.destroy();
     server.close(() => {
       process.exit(1);
     });
