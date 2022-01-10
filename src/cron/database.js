@@ -1,11 +1,9 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-console */
-/* eslint-disable no-plusplus */
 import cron from 'node-cron';
 
 import { Nft, Price, Status } from '../models';
 import fetchPrice from '../utils/fetchPrice';
 import checkPrice from '../utils/checkPrice';
+import { writeUSDPriceIntoContract } from '../utils/writeUSDPriceIntoContract';
 
 const updateTokenPrice = async (nft) => {
   const nftPrice = await Price.findOne({
@@ -38,7 +36,7 @@ const updateTokenPrice = async (nft) => {
       usdPriceArrayString[index] = newPrice.toString();
       newUsdPriceString = usdPriceArrayString.join(',');
 
-      /// TODO: Chang: write `newPrice` into oracle contract
+      await writeUSDPriceIntoContract(nft.contract, newPrice);
     }
 
     await nftPrice.update({
