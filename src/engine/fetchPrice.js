@@ -2,6 +2,10 @@ import { GraphQLClient, gql } from 'graphql-request';
 
 require('dotenv').config();
 
+////////////////////////////////////////////
+/// for icy.tools service
+////////////////////////////////////////////
+
 const fetchPrice = async (contract, searchDate) => {
   const endpoint = 'https://graphql.icy.tools/graphql';
 

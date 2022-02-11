@@ -1,3 +1,8 @@
+////////////////////////////////////////////
+/// Drops Math calc logic
+/// https://docs.drops.co/nft-price-oracle/overview
+////////////////////////////////////////////
+
 //remove extreme outliers and get valid sales
 const removeExtremeOutliers = async (arr) => {
   let sum = 0;

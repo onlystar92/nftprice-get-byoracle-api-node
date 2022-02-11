@@ -4,8 +4,21 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    contract: {
+    address: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    chainId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    roundId: {
+      type: DataTypes.NUMBER,
+      allowNull: false,
+    },
+    dropsPrice: {
+      type: DataTypes.NUMBER,
+      allowNull: false,
     },
   });
   Nft.associate = function (models) {

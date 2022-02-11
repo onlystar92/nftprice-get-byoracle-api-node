@@ -1,20 +1,24 @@
 module.exports = (sequelize, DataTypes) => {
-  const Price = sequelize.define('Price', {
+  const Price = sequelize.define('Sale', {
     nftID: {
       type: DataTypes.NUMBER,
       allowNull: false,
     },
-    usdPrice: {
+    tokenId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    timestamp: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    usdValue: {
       type: DataTypes.NUMBER,
       allowNull: false,
     },
-    roundId: {
-      type: DataTypes.NUMBER,
+    transactionHash: {
+      type: DataTypes.STRING,
       allowNull: false,
-    },
-    source: {
-      type: DataTypes.ENUM,
-      values: ['icy.tools', 'nftx', 'drops'],
     },
   });
   Price.associate = function (models) {

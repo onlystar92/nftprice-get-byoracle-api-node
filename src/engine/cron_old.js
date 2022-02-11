@@ -1,9 +1,9 @@
 import cron from 'node-cron';
 
 import { Nft, Price, Status } from '../models';
-import fetchPrice from '../engine/fetchPrice';
-import checkPrice from '../engine/checkPrice';
-import { writeUSDPriceIntoContract } from '../engine/writeUSDPriceIntoContract';
+import fetchPrice from './fetchPrice';
+import checkPrice from './checkPrice';
+import { writeUSDPriceIntoContract } from './writeUSDPriceIntoContract';
 
 const updateTokenPrice = async (nft) => {
   const nftPrice = await Price.findOne({

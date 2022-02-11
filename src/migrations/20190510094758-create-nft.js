@@ -10,8 +10,17 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
-      contract: {
+      address: {
         type: Sequelize.STRING,
+      },
+      chainId: {
+        type: Sequelize.STRING,
+      },
+      roundId: {
+        type: Sequelize.INTEGER,
+      },
+      dropsPrice: {
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
