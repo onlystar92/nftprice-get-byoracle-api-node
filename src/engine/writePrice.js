@@ -2,8 +2,11 @@ import NFTOracleABI from '../constants/abis/NFTOracleABI.json';
 
 require('dotenv').config();
 
-const Web3 = require('web3');
+////////////////////////////////////////////
+/// write price data into oracle contract
+////////////////////////////////////////////
 
+const Web3 = require('web3');
 const web3 = new Web3(process.env.RPC_URL);
 
 const writeUSDPriceIntoContract = async (contract, usdPrice) => {

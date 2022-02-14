@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) =>
-    queryInterface.createTable('Prices', {
+    queryInterface.createTable('Sales', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -13,24 +13,26 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      usdPrice: {
-        type: Sequelize.INTEGER,
+      tokenId: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
-      roundId: {
-        type: Sequelize.INTEGER,
+      timestamp: {
+        type: Sequelize.DATE,
+        allowNull: false,
       },
-      source: {
+      usdValue: {
         type: Sequelize.INTEGER,
-        values: ['icy.tools', 'nftx', 'drops'],
+        allowNull: false,
+      },
+      transactionHash: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-      },
     }),
-  down: (queryInterface, Sequelize) => queryInterface.dropTable('Prices'),
+  down: (queryInterface, Sequelize) => queryInterface.dropTable('Sales'),
 };

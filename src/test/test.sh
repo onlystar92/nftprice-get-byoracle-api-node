@@ -1,1 +1,1 @@
-curl -X GET -H 'Authorization: nft-price-oracle-api-key' -H 'Content-Type: application/json' -H "Accept: application/json" http://localhost:8082/api/v1/nft/all
+curl -X GET -H 'Authorization: drops-api-secret-key' -H 'Content-Type: application/json' -H "Accept: application/json" http://localhost:8082/api/v1/nfts
