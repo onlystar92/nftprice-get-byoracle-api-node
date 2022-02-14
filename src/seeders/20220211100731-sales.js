@@ -13,7 +13,7 @@ module.exports = {
             +new Date() - Math.floor(Math.random() * 10000000000)
           ), // randome date
           createdAt: new Date(),
-          usdValue: 101,
+          etherValue: 101,
           transactionHash: '0x01',
         },
         {
@@ -25,7 +25,7 @@ module.exports = {
           ), // randome date
           createdAt: new Date(),
 
-          usdValue: 787,
+          etherValue: 787,
           transactionHash: '0x01',
         },
         {
@@ -37,7 +37,7 @@ module.exports = {
           ), // randome date
           createdAt: new Date(),
 
-          usdValue: 453,
+          etherValue: 453,
           transactionHash: '0x01',
         },
         {
@@ -49,7 +49,7 @@ module.exports = {
           ), // randome date
           createdAt: new Date(),
 
-          usdValue: 345,
+          etherValue: 345,
           transactionHash: '0x02',
         },
         {
@@ -61,7 +61,7 @@ module.exports = {
           ), // randome date
           createdAt: new Date(),
 
-          usdValue: 5,
+          etherValue: 5,
           transactionHash: '0x03',
         },
         {
@@ -73,7 +73,7 @@ module.exports = {
           ), // randome date
           createdAt: new Date(),
 
-          usdValue: 23,
+          etherValue: 23,
           transactionHash: '0x04',
         },
         {
@@ -85,7 +85,7 @@ module.exports = {
           ), // randome date
           createdAt: new Date(),
 
-          usdValue: 12,
+          etherValue: 12,
           transactionHash: '0x05',
         },
       ],

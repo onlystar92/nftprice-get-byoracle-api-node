@@ -11,7 +11,7 @@ export const allNfts = async (req, res) => {
       limit,
     });
 
-    return successResponse(req, res, { nfts });
+    return successResponse(req, res, nfts);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
@@ -26,7 +26,9 @@ export const addNft = async (req, res) => {
     });
 
     if (nft) {
-      throw new Error(
+      return errorResponse(
+        req,
+        res,
         'NFT already exists with same contract on the same network'
       );
     }
@@ -42,6 +44,7 @@ export const addNft = async (req, res) => {
     };
 
     await Nft.create(payload);
+
     return successResponse(req, res, {});
   } catch (error) {
     return errorResponse(req, res, error.message);
@@ -49,17 +52,21 @@ export const addNft = async (req, res) => {
 };
 
 export const removeNft = async (req, res) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  const nft = await Nft.findByPk({
-    id,
-  });
+    const nft = await Nft.findByPk({
+      id,
+    });
 
-  if (nft) {
-    await nft.destry();
+    if (nft) {
+      await nft.destry();
+    }
+
+    return successResponse(req, res, {});
+  } catch (error) {
+    return errorResponse(req, res, error.message);
   }
-
-  return successResponse(req, res, {});
 };
 
 export const updateNft = async (req, res) => {
@@ -94,15 +101,19 @@ export const updateNft = async (req, res) => {
 };
 
 export const getNft = async (req, res) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  const nft = await Nft.findByPk({
-    id,
-  });
+    const nft = await Nft.findOne({
+      where: { id },
+    });
 
-  if (nft) {
-    return successResponse(req, res, { nft });
+    if (nft) {
+      return successResponse(req, res, nft.dataValues);
+    }
+
+    return errorResponse(req, res, 'Not Found');
+  } catch (error) {
+    return errorResponse(req, res, error.message);
   }
-
-  return errorResponse(req, res, 'Not Found');
 };

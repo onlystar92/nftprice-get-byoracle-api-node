@@ -6,8 +6,8 @@ export const addSale = {
     chainId: Joi.strict().required(),
 
     tokenId: Joi.string().required(),
-    // timestamp: Joi.string().required(),
-    usdValue: Joi.number().required(),
+    timestamp: Joi.string().required(),
+    etherValue: Joi.number().required(),
     transactionHash: Joi.string().required(),
   },
 };

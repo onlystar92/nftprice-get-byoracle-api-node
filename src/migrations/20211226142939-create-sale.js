@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
       },
-      usdValue: {
+      etherValue: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
@@ -30,6 +30,10 @@ module.exports = {
         allowNull: false,
       },
       createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
       },

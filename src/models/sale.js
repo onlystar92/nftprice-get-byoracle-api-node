@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    usdValue: {
+    etherValue: {
       type: DataTypes.NUMBER,
       allowNull: false,
     },

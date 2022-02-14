@@ -14,6 +14,7 @@ dotenv.config();
 require('./src/config/sequelize');
 
 const app = express();
+
 app.use(
   bodyParser.urlencoded({
     extended: true,

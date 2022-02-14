@@ -16,7 +16,7 @@ const updateDropsPrice = crons.schedule('0 0 */4 * * *', async () => {
         nftID: nft.id,
       },
     });
-    const prices = sales.map((s) => s.usdValue).slice(-100);
+    const prices = sales.map((s) => s.etherValue).slice(-100);
     const newPrice = await calcDropsMath(prices);
 
     if (newPrice > 0) {
@@ -45,7 +45,7 @@ const addDropsPrice = cron.schedule('0 0 0 * * *', async () => {
         roundId,
         nftID: nft.id,
       },
-    }).map((p) => p.usdValue);
+    }).map((p) => p.etherValue);
 
     const newDropsPrice = prices.reduce((a, b) => a + b, 0) / prices.length;
     await nft.update({
