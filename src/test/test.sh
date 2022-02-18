@@ -16,9 +16,3 @@ curl -X POST -H 'Authorization: drops-api-secret-key' -H 'Content-Type: applicat
     "etherValue": "90",
     "transactionHash": "0x25d263b4f386abd30e0dcf582e1b6de4db4590f260be7d610ae116c6fc4d70bf"
 }' http://localhost:8082/api/v1/sales/new
-
-
-- test URLs
-curl -X GET -H 'Authorization: drops-api-secret-key' -H 'Content-Type: application/json' http://localhost:8082/api/v1/test/addSales
-curl -X GET -H 'Authorization: drops-api-secret-key' -H 'Content-Type: application/json' http://localhost:8082/api/v1/test/dropsMath
-curl -X GET -H 'Authorization: drops-api-secret-key' -H 'Content-Type: application/json' http://localhost:8082/api/v1/test/dropsMath

@@ -19,24 +19,3 @@ export const errorResponse = (
     data: null,
     success: false,
   });
-
-export const validateFields = (object, fields) => {
-  const errors = [];
-  fields.forEach((f) => {
-    if (!(object && object[f])) {
-      errors.push(f);
-    }
-  });
-  return errors.length ? `${errors.join(', ')} are required fields.` : '';
-};
-
-export const uniqueId = (length = 13) => {
-  let result = '';
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};

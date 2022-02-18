@@ -28,7 +28,4 @@ router.post(
   saleController.addSale
 );
 
-router.get('/test/addSales', testController.addSale);
-router.get('/test/dropsMath', testController.dropMath);
-
 module.exports = router;
