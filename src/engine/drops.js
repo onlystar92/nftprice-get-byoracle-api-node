@@ -41,7 +41,10 @@ const getSalesExtremeOutliersRemoved = async (nftID, count) => {
     return newSaleData;
   });
 
-  return sales;
+  return {
+    sales,
+    enoughSaleData: sales.length >= count,
+  };
 };
 
 // get truncated mean(average price)
@@ -60,17 +63,21 @@ const getTruncateMean = async (arr) => {
 };
 
 // get sample standard deviation
-const getDeviation = async (arr) => {
+const getDeviation = async (arr, truncatedMean) => {
   const lastArr = arr.slice(-50);
   const midArr = lastArr.slice(3, 47);
 
   let sum = 0;
-  const truncatedMean = await getTruncateMean(arr);
-
   for (let i = 0; i < midArr.length; i++)
     sum += Math.pow(midArr[i] - truncatedMean, 2);
 
-  return Math.sqrt(sum / (midArr.length - 1));
+  const deviation = Math.sqrt(sum / (midArr.length - 1));
+
+  // when lower standard deviation bound can't be lower than 20% of the trimmed mean value.
+  if (deviation > truncatedMean * 0.2) {
+    return deviation;
+  }
+  return truncatedMean;
 };
 
 // remove probable outliers and get valid sales
@@ -78,7 +85,10 @@ const removeProbableOutliers = async (arr, minX, maxX) => {
   const validSalesArr = [];
 
   const truncatedMean = await getTruncateMean(arr.map((s) => s.price));
-  const s = await getDeviation(arr.map((s) => s.price));
+  const s = await getDeviation(
+    arr.map((s) => s.price),
+    truncatedMean
+  );
 
   for (let i = 0; i < arr.length; i++) {
     if (
@@ -120,17 +130,17 @@ const calcDropsMath = async (
   floorQuntityOfSales = 10
 ) => {
   //Extreme Outliers Removal
-  const extremeRemovalSales = await getSalesExtremeOutliersRemoved(
+  const { sales, enoughSaleData } = await getSalesExtremeOutliersRemoved(
     nftID,
     count
   );
 
+  if (!enoughSaleData) {
+    return 0;
+  }
+
   //Probable Outliers Removal
-  const probableRemoval = await removeProbableOutliers(
-    extremeRemovalSales,
-    lowerSD,
-    upperSD
-  );
+  const probableRemoval = await removeProbableOutliers(sales, lowerSD, upperSD);
 
   //Get Current Floor
   const floorPrice = await getCurrentFloor(
