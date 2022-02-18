@@ -5,6 +5,7 @@ import * as nftController from '../controllers/nft/nft.controller';
 import * as nftValidator from '../controllers/nft/nft.validator';
 import * as saleController from '../controllers/sale/sale.controller';
 import * as saleValidator from '../controllers/sale/sale.validator';
+import * as testController from '../controllers/test/test.controller';
 
 const router = express.Router();
 
@@ -26,5 +27,8 @@ router.post(
   validate(saleValidator.addSale),
   saleController.addSale
 );
+
+router.get('/test/addSales', testController.addSale);
+router.get('/test/dropsMath', testController.dropMath);
 
 module.exports = router;

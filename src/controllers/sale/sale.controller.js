@@ -1,5 +1,6 @@
 import { Sale, Nft } from '../../models';
 import { successResponse, errorResponse } from '../../helpers';
+import { checkSaleIfOutlier, calcDropsMath } from '../../engine/drops';
 
 export const allSales = async (req, res) => {
   try {
@@ -28,6 +29,8 @@ export const addSale = async (req, res) => {
       transactionHash,
     } = req.body;
 
+    const currentPrice = parseFloat(etherValue);
+
     let nft = await Nft.findOne({
       where: { address, chainId },
     });
@@ -37,6 +40,8 @@ export const addSale = async (req, res) => {
         name: '',
         chainId,
         address,
+        roundId: 0,
+        dropsPrice: 0,
       });
     }
 
@@ -44,13 +49,16 @@ export const addSale = async (req, res) => {
     // 2. Only 1 NFT is sold within transaction.
     // 3. Same token id was not sold within the last 24 hours.
 
+    const outlier = await checkSaleIfOutlier(nft.id, currentPrice);
+
     const payload = {
       nftID: nft.id,
       tokenId,
       timestamp: new Date(timestamp * 1000),
-      etherValue,
+      etherValue: currentPrice,
       transactionHash,
       createdAt: new Date(),
+      outlier,
     };
     await Sale.create(payload);
 

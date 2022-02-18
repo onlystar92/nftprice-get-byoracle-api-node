@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.NUMBER,
       allowNull: false,
     },
-    usdPrice: {
+    etherValue: {
       type: DataTypes.NUMBER,
       allowNull: false,
     },

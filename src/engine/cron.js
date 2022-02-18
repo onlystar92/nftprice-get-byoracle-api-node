@@ -1,6 +1,7 @@
 import cron from 'node-cron';
 
-import calcDropsMath from './dropsMath';
+import { calcDropsMath } from './drops';
+import { calcAverage } from './utils';
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /// calculate drops oracle Price every 4 hours
@@ -10,19 +11,12 @@ const updateDropsPrice = crons.schedule('0 0 */4 * * *', async () => {
 
   for (let i = 0; i < allNfts.length; i++) {
     const nft = allNfts[i];
-    const sales = await Sales.findAll({
-      order: [['createdAt', 'DESC']],
-      where: {
-        nftID: nft.id,
-      },
-    });
-    const prices = sales.map((s) => s.etherValue).slice(-100);
-    const newPrice = await calcDropsMath(prices);
+    const newPrice = await calcDropsMath(nft.id);
 
     if (newPrice > 0) {
       await Price.create({
         nftID: nft.id,
-        usdPrice: newPrice,
+        etherValue: newPrice,
         roundId: nft.roundId,
         source: 'drops',
       });
@@ -47,11 +41,10 @@ const addDropsPrice = cron.schedule('0 0 0 * * *', async () => {
       },
     }).map((p) => p.etherValue);
 
-    const newDropsPrice = prices.reduce((a, b) => a + b, 0) / prices.length;
     await nft.update({
       ...nft,
       roundId: nft.roundId + 1,
-      dropsPrice: newDropsPrice,
+      dropsPrice: calcAverage(prices),
     });
   }
 });

@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    outlier: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
   });
   Price.associate = function (models) {
     models.Price.belongsTo(models.Nft, { foreignKey: 'nftID' });

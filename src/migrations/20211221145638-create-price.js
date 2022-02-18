@@ -13,14 +13,14 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      usdPrice: {
+      etherValue: {
         type: Sequelize.INTEGER,
       },
       roundId: {
         type: Sequelize.INTEGER,
       },
       source: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.ENUM,
         values: ['icy.tools', 'nftx', 'drops'],
       },
       createdAt: {
