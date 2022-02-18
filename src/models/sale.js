@@ -12,12 +12,16 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    usdValue: {
+    etherValue: {
       type: DataTypes.NUMBER,
       allowNull: false,
     },
     transactionHash: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    outlier: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
   });

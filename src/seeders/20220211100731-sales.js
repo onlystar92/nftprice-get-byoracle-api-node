@@ -13,8 +13,10 @@ module.exports = {
             +new Date() - Math.floor(Math.random() * 10000000000)
           ), // randome date
           createdAt: new Date(),
-          usdValue: 101,
+          updatedAt: new Date(),
+          etherValue: 101,
           transactionHash: '0x01',
+          outlier: false,
         },
         {
           id: 1,
@@ -24,9 +26,10 @@ module.exports = {
             +new Date() - Math.floor(Math.random() * 10000000000)
           ), // randome date
           createdAt: new Date(),
-
-          usdValue: 787,
+          updatedAt: new Date(),
+          etherValue: 787,
           transactionHash: '0x01',
+          outlier: false,
         },
         {
           id: 2,
@@ -36,9 +39,10 @@ module.exports = {
             +new Date() - Math.floor(Math.random() * 10000000000)
           ), // randome date
           createdAt: new Date(),
-
-          usdValue: 453,
+          updatedAt: new Date(),
+          etherValue: 453,
           transactionHash: '0x01',
+          outlier: false,
         },
         {
           id: 3,
@@ -48,9 +52,10 @@ module.exports = {
             +new Date() - Math.floor(Math.random() * 10000000000)
           ), // randome date
           createdAt: new Date(),
-
-          usdValue: 345,
+          updatedAt: new Date(),
+          etherValue: 345,
           transactionHash: '0x02',
+          outlier: false,
         },
         {
           id: 4,
@@ -60,9 +65,10 @@ module.exports = {
             +new Date() - Math.floor(Math.random() * 10000000000)
           ), // randome date
           createdAt: new Date(),
-
-          usdValue: 5,
+          updatedAt: new Date(),
+          etherValue: 5,
           transactionHash: '0x03',
+          outlier: false,
         },
         {
           id: 5,
@@ -72,9 +78,10 @@ module.exports = {
             +new Date() - Math.floor(Math.random() * 10000000000)
           ), // randome date
           createdAt: new Date(),
-
-          usdValue: 23,
+          updatedAt: new Date(),
+          etherValue: 23,
           transactionHash: '0x04',
+          outlier: true,
         },
         {
           id: 6,
@@ -84,9 +91,10 @@ module.exports = {
             +new Date() - Math.floor(Math.random() * 10000000000)
           ), // randome date
           createdAt: new Date(),
-
-          usdValue: 12,
+          updatedAt: new Date(),
+          etherValue: 12,
           transactionHash: '0x05',
+          outlier: true,
         },
       ],
       {}
