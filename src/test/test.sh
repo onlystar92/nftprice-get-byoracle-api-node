@@ -1,6 +1,9 @@
 - list all NFTs
 curl -X GET -H 'Authorization: drops-api-secret-key' -H 'Content-Type: application/json' http://localhost:8082/api/v1/nfts
 
+- get NFT
+curl -X GET -H 'Authorization: drops-api-secret-key' -H 'Content-Type: application/json' -d '{"chainId":"1"}' http://localhost:8082/api/v1/nfts/0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb
+
 - add new NFT
 curl -X POST -H 'Authorization: drops-api-secret-key' -H 'Content-Type: application/json' -d '{"name":"CryptoPunk #6227", "address":"0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb","chainId":"0"}' http://localhost:8082/api/v1/nfts/new
 

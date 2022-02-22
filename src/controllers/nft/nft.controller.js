@@ -1,17 +1,17 @@
-import { Nft, Price } from '../../models';
+import { Nft } from '../../models';
 import { successResponse, errorResponse } from '../../helpers';
 
 export const allNfts = async (req, res) => {
   try {
     const page = req.params.page || 1;
     const limit = 100;
-    const nfts = await Nft.findAndCountAll({
+    const { rows } = await Nft.findAndCountAll({
       order: [['createdAt', 'DESC']],
       offset: (page - 1) * limit,
       limit,
     });
 
-    return successResponse(req, res, nfts);
+    return successResponse(req, res, rows);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
@@ -102,14 +102,23 @@ export const updateNft = async (req, res) => {
 
 export const getNft = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { address } = req.params;
+    const { chainId } = req.body;
 
     const nft = await Nft.findOne({
-      where: { id },
+      where: { address, chainId },
     });
 
     if (nft) {
-      return successResponse(req, res, nft.dataValues);
+      return successResponse(req, res, {
+        name: nft.name,
+        address,
+        chainId,
+        roundId: nft.roundId,
+        usdPrice: {
+          drops: nft.dropsPrice,
+        },
+      });
     }
 
     return errorResponse(req, res, 'Not Found');
