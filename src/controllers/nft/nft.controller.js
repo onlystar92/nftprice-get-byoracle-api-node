@@ -11,7 +11,7 @@ export const allNfts = async (req, res) => {
       limit,
     });
 
-    return successResponse(req, res, { nfts });
+    return successResponse(req, res, nfts);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
@@ -19,24 +19,32 @@ export const allNfts = async (req, res) => {
 
 export const addNft = async (req, res) => {
   try {
-    const { name, contract } = req.body;
+    const { name, address, chainId } = req.body;
 
     const nft = await Nft.findOne({
-      where: { contract, name },
+      where: { name, address, chainId },
     });
 
     if (nft) {
-      throw new Error('NFT already exists with same contract');
+      return errorResponse(
+        req,
+        res,
+        'NFT already exists with same contract on the same network'
+      );
     }
 
     const payload = {
-      contract,
       name,
+      address,
+      chainId,
+      roundId: 0,
+      dropsPrice: 0,
       updatedAt: new Date(),
       createdAt: new Date(),
     };
 
     await Nft.create(payload);
+
     return successResponse(req, res, {});
   } catch (error) {
     return errorResponse(req, res, error.message);
@@ -45,24 +53,66 @@ export const addNft = async (req, res) => {
 
 export const removeNft = async (req, res) => {
   try {
-    const { name, contract } = req.body;
+    const { id } = req.params;
 
-    const nft = await Nft.findOne({
-      where: { contract, name },
+    const nft = await Nft.findByPk({
+      id,
     });
 
-    if (!nft) {
-      throw new Error('NFT not exist');
+    if (nft) {
+      await nft.destry();
     }
 
-    const price = await Price.findOne({
-      where: { nftID: nft.id },
-    });
-    await price.destry();
-
-    await nft.destry();
-
     return successResponse(req, res, {});
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+};
+
+export const updateNft = async (req, res) => {
+  try {
+    const { name, address, chainId, roundId, dropsPrice } = req.body;
+    const payload = {
+      name,
+      address,
+      chainId,
+      roundId,
+      dropsPrice,
+      updatedAt: new Date(),
+    };
+
+    const { id } = req.params;
+    let nft = await Nft.findByPk({
+      id,
+    });
+
+    if (nft === null) {
+      nft = await Nft.create({
+        ...payload,
+        createdAt: new Date(),
+      });
+    }
+
+    await Nft.update(payload);
+    return successResponse(req, res, {});
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+};
+
+export const getNft = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const nft = await Nft.findOne({
+      where: { id },
+    });
+
+    if (nft) {
+      return successResponse(req, res, nft.dataValues);
+    }
+
+    return errorResponse(req, res, 'Not Found');
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
