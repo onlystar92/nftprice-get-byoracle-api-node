@@ -1,59 +1,85 @@
 # DropsOrg NFT Price API
 
-### Project Setup
+## Project Setup
 
 Once you clone or download project go into you folder
 
 > now cope **.env.local** file to **.env** file
 
-### Installing
+### Install all dependent libraries
 
 ```
-> npm install or yarn install  (this will install all dependent libraries)
+npm install
 ```
 
-## Sequelize CLI realted to migrations and seed
+### Run pending migrations
 
 ```
->   node_modules/.bin/sequelize db:migrate                        Run pending migrations
->   node_modules/.bin/sequelize db:migrate:schema:timestamps:add  Update migration table to have timestamps
->   node_modules/.bin/sequelize db:migrate:status                 List the status of all migrations
->   node_modules/.bin/sequelize db:migrate:undo                   Reverts a migration
->   node_modules/.bin/sequelize db:migrate:undo:all               Revert all migrations ran
->   node_modules/.bin/sequelize db:seed                           Run specified seeder
->   node_modules/.bin/sequelize db:seed:undo                      Deletes data from the database
->   node_modules/.bin/sequelize db:seed:all                       Run every seeder
->   node_modules/.bin/sequelize db:seed:undo:all                  Deletes data from the database
->   node_modules/.bin/sequelize db:create                         Create database specified by configuration
->   node_modules/.bin/sequelize db:drop                           Drop database specified by configuration
->   node_modules/.bin/sequelize init                              Initializes project
->   node_modules/.bin/sequelize init:config                       Initializes configuration
->   node_modules/.bin/sequelize init:migrations                   Initializes migrations
->   node_modules/.bin/sequelize init:models                       Initializes models
->   node_modules/.bin/sequelize init:seeders                      Initializes seeders
->   node_modules/.bin/sequelize migration:generate                Generates a new migration file      [aliases: migration:create]
->   node_modules/.bin/sequelize model:generate                    Generates a model and its migration [aliases: model:create]
->   node_modules/.bin/sequelize seed:generate                     Generates a new seed file
+node_modules/.bin/sequelize db:migrate
 ```
 
-### Success Response
+## API
+
+### API endpoints
+
+- Please use x-www-form-urlencoded format for body params.
+- The price will be provided in USD value.
+
+#### list all NFTs
+
+```
+curl -X GET -H 'Authorization: SECRETE_API_KEY' -H 'Content-Type: application/json' http://localhost:8082/api/v1/nfts
+```
+
+#### get price info of NFT
+
+- You should set chainId in request body.
+
+```
+curl -X GET -H 'Authorization: SECRETE_API_KEY' -H 'Content-Type: application/json' -d '{"chainId":"1"}' http://localhost:8082/api/v1/nfts/${address}
+```
+
+#### add new Sale
+
+```
+curl -X POST -H 'Authorization: drops-api-secret-key' -H 'Content-Type: application/json' -d '{
+    "address": "0xb47e3cd837ddf8e4c57f05d70ab865de6e193bcc",
+    "chainId": "0",
+    "tokenId": "6227",
+    "timestamp": "1644505503",
+    "etherValue": "90",
+    "transactionHash": "0x25d263b4f386abd30e0dcf582e1b6de4db4590f260be7d610ae116c6fc4d70bf"
+}' http://localhost:8082/api/v1/sales/new
+```
+
+### API Format
+
+#### Success Response (/api/v1/nfts/0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb)
 
 ```
 {
     "success": true,
     "code": 200,
-    "data": "object or array"
+    "data": {
+        "name":"CRYPTOPUNKS",
+        "address":"0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb",
+        "chainId":"1",
+        "roundId":0,
+        "usdPrice":{
+            "drops":0
+        }
+    }
 }
 ```
 
-### Error Response
+#### Error Response
 
 ```
 {
     "success": false,
     "code": 500,
-    "errorMessage": "************************",
-    "error": {},
+    "errorMessage": "The provided auth token is not valid",
+    "error": "Authentication Required",
     "data": null
 }
 ```

@@ -6,13 +6,13 @@ export const allSales = async (req, res) => {
   try {
     const page = req.params.page || 1;
     const limit = 100;
-    const sales = await Sale.findAndCountAll({
+    const { rows } = await Sale.findAndCountAll({
       order: [['createdAt', 'DESC']],
       offset: (page - 1) * limit,
       limit,
     });
 
-    return successResponse(req, res, sales);
+    return successResponse(req, res, rows);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }

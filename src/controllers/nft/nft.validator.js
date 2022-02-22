@@ -17,3 +17,9 @@ export const updateNft = {
     dropsPrice: Joi.number().required(),
   },
 };
+
+export const getNft = {
+  body: {
+    chainId: Joi.string().required(),
+  },
+};

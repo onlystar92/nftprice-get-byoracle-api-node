@@ -13,7 +13,11 @@ const router = express.Router();
 //= ===============================
 router.get('/nfts', nftController.allNfts);
 router.post('/nfts/new', validate(nftValidator.addNft), nftController.addNft);
-router.get('/nfts/:id', nftController.getNft);
+router.get(
+  '/nfts/:address',
+  validate(nftValidator.getNft),
+  nftController.getNft
+);
 router.put(
   '/nfts/:id',
   validate(nftValidator.updateNft),

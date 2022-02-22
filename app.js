@@ -34,11 +34,11 @@ function validateAuthorization(req) {
 app.use('/api', (req, res, next) => {
   if (!validateAuthorization(req)) {
     res.send({
-      meta: {
-        code: 99,
-        message: 'Authentication Required',
-        description: 'The provided auth token is not valid',
-      },
+      success: false,
+      code: 401,
+      errorMessage: 'The provided auth token is not valid',
+      error: 'Authentication Required',
+      data: null,
     });
   } else {
     next();
