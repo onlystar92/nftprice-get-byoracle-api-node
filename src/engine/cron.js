@@ -1,5 +1,6 @@
 import cron from 'node-cron';
 
+import { Nft, Price, Transaction } from '../models';
 import { calcDropsMath } from './drops';
 import { calcAverage } from './utils';
 
@@ -46,8 +47,23 @@ const addDropsPrice = cron.schedule('0 0 0 * * *', async () => {
       roundId: nft.roundId + 1,
       dropsPrice: calcAverage(prices),
     });
+
+    if (nft.roundId > 30) {
+      // remove old Prices history
+      for (i = nft.roundId - 30; i > 0; i--) {
+        await Price.destroy({
+          where: {
+            nftID: nft.id,
+          },
+        });
+      }
+    }
   }
 });
+
+////////////////////////////////////////////////////////////////////////////////////////
+/// verify transactions every 5 minutes
+////////////////////////////////////////////////////////////////////////////////////////
 
 module.exports = {
   updateDropsPrice,

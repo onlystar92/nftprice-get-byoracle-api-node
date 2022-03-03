@@ -1,10 +1,10 @@
 import { Sale, Nft } from '../../models';
 import { successResponse, errorResponse } from '../../helpers';
-import { checkSaleIfOutlier, calcDropsMath } from '../../engine/drops';
+import { checkSaleIfOutlier } from '../../engine/drops';
 
 export const allSales = async (req, res) => {
   try {
-    const page = req.params.page || 1;
+    const page = req.query.page || 1;
     const limit = 100;
     const { rows } = await Sale.findAndCountAll({
       order: [['createdAt', 'DESC']],
@@ -22,11 +22,11 @@ export const addSale = async (req, res) => {
   try {
     const {
       address,
-      chainId,
       tokenId,
       timestamp,
       etherValue,
       transactionHash,
+      chainId,
     } = req.body;
 
     const currentPrice = parseFloat(etherValue);

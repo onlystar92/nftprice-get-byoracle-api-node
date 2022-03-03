@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const Sale = sequelize.define('Sale', {
+  const Transaction = sequelize.define('Transaction', {
     nftID: {
       type: DataTypes.NUMBER,
       allowNull: false,
@@ -20,13 +20,21 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    outlier: {
-      type: DataTypes.BOOLEAN,
+    from: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    verificationStatus: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    chainId: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
   });
-  Sale.associate = function (models) {
-    models.Sale.belongsTo(models.Nft, { foreignKey: 'nftID' });
+  Transaction.associate = function (models) {
+    models.Transaction.belongsTo(models.Nft, { foreignKey: 'nftID' });
   };
-  return Sale;
+  return Transaction;
 };

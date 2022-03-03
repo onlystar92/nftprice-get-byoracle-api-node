@@ -1,9 +1,9 @@
-import { Nft } from '../../models';
+import { Nft, Sales, Prices } from '../../models';
 import { successResponse, errorResponse } from '../../helpers';
 
 export const allNfts = async (req, res) => {
   try {
-    const page = req.params.page || 1;
+    const page = req.query.page || 1;
     const limit = 100;
     const { rows } = await Nft.findAndCountAll({
       order: [['createdAt', 'DESC']],
@@ -19,7 +19,7 @@ export const allNfts = async (req, res) => {
 
 export const addNft = async (req, res) => {
   try {
-    const { name, address, chainId } = req.body;
+    const { chainId, address, name } = req.body;
 
     const nft = await Nft.findOne({
       where: { name, address, chainId },
@@ -60,6 +60,16 @@ export const removeNft = async (req, res) => {
     });
 
     if (nft) {
+      await Sales.destry({
+        where: {
+          nftID: id,
+        },
+      });
+      await Prices.destry({
+        where: {
+          nftID: id,
+        },
+      });
       await nft.destry();
     }
 
@@ -71,7 +81,9 @@ export const removeNft = async (req, res) => {
 
 export const updateNft = async (req, res) => {
   try {
-    const { name, address, chainId, roundId, dropsPrice } = req.body;
+    const { name, address, roundId, dropsPrice, chainId } = req.body;
+    const { id } = req.param;
+
     const payload = {
       name,
       address,
@@ -81,7 +93,6 @@ export const updateNft = async (req, res) => {
       updatedAt: new Date(),
     };
 
-    const { id } = req.params;
     let nft = await Nft.findByPk({
       id,
     });
@@ -93,7 +104,7 @@ export const updateNft = async (req, res) => {
       });
     }
 
-    await Nft.update(payload);
+    await nft.update(payload);
     return successResponse(req, res, {});
   } catch (error) {
     return errorResponse(req, res, error.message);
@@ -102,8 +113,7 @@ export const updateNft = async (req, res) => {
 
 export const getNft = async (req, res) => {
   try {
-    const { address } = req.params;
-    const { chainId } = req.body;
+    const { chainId, address } = req.query;
 
     const nft = await Nft.findOne({
       where: { address, chainId },
@@ -111,13 +121,11 @@ export const getNft = async (req, res) => {
 
     if (nft) {
       return successResponse(req, res, {
-        name: nft.name,
-        address,
-        chainId,
-        roundId: nft.roundId,
-        usdPrice: {
-          drops: nft.dropsPrice,
-        },
+        // name: nft.name,
+        // address,
+        // chainId,
+        // roundId: nft.roundId,
+        dropsEtherValue: nft.dropsPrice,
       });
     }
 
