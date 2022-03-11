@@ -8,19 +8,28 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       name: {
+        allowNull: false,
         type: Sequelize.STRING,
       },
       address: {
+        allowNull: false,
         type: Sequelize.STRING,
       },
       chainId: {
+        allowNull: false,
         type: Sequelize.STRING,
       },
       roundId: {
+        allowNull: false,
         type: Sequelize.INTEGER,
       },
       dropsPrice: {
+        allowNull: false,
         type: Sequelize.INTEGER,
+      },
+      seed: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,

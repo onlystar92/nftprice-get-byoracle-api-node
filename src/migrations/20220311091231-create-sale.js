@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      nftID: {
+      nftId: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
@@ -17,19 +17,35 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      timestamp: {
+      blockTimestamp: {
         type: Sequelize.DATE,
         allowNull: false,
       },
       etherValue: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
         allowNull: false,
       },
       transactionHash: {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      from: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      to: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       outlier: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+      },
+      sameTokenIDSold: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+      },
+      blockConfirmed: {
         allowNull: false,
         type: Sequelize.BOOLEAN,
       },

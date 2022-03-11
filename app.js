@@ -25,10 +25,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 function validateAuthorization(req) {
-  return (
-    req.header('Authorization') &&
-    req.header('Authorization') === process.env.SECRET_KEY
-  );
+  if (req.query && req.query.api_key) {
+    return req.query.api_key === process.env.DROP_API_KEY;
+  }
+  return false;
 }
 
 app.use('/api', (req, res, next) => {
@@ -36,7 +36,7 @@ app.use('/api', (req, res, next) => {
     res.send({
       success: false,
       code: 401,
-      errorMessage: 'The provided auth token is not valid',
+      errorMessage: 'The provided api_key is not valid',
       error: 'Authentication Required',
       data: null,
     });

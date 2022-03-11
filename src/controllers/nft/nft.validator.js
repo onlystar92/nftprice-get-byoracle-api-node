@@ -8,18 +8,32 @@ export const addNft = {
   },
 };
 
+export const removeNft = {
+  params: {
+    id: Joi.string().required(),
+  },
+};
+
 export const updateNft = {
   body: {
     name: Joi.string().required(),
     address: Joi.string().required(),
     chainId: Joi.string().required(),
-    roundId: Joi.number().required(),
-    dropsPrice: Joi.number().required(),
+  },
+  params: {
+    id: Joi.string().required(),
   },
 };
 
 export const getNft = {
-  body: {
+  params: {
+    id: Joi.string().required(),
+  },
+};
+
+export const getPrice = {
+  query: {
     chainId: Joi.string().required(),
+    address: Joi.string().required(),
   },
 };

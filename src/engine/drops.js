@@ -1,19 +1,19 @@
 import { Sale, Nft } from '../models';
-import { calcAverage } from './utils';
+import { calcAverage } from '../helpers';
 
 // check if current price is outlier or not
-const checkSaleIfOutlier = async (nftID, price) => {
+const checkSaleIfOutlier = async (nftId, price) => {
   const sales = await Sale.findAll({
     order: [['createdAt', 'DESC']],
     offset: 0,
     limit: 100,
     where: {
       outlier: false,
-      nftID,
+      nftId,
     },
   });
   const prevPrices = sales
-    .map((sale) => parseFloat(sale.etherValue))
+    .map((sale) => sale.etherValue)
     .filter((price) => price !== 0);
 
   if (prevPrices.length === 0) {
@@ -24,18 +24,18 @@ const checkSaleIfOutlier = async (nftID, price) => {
 };
 
 // get valid sales without exterme outliers
-const getSalesExtremeOutliersRemoved = async (nftID, count) => {
+const getSalesExtremeOutliersRemoved = async (nftId, count) => {
   const sales = await Sale.findAll({
     order: [['createdAt', 'DESC']],
     offset: 0,
     limit: count,
     where: {
       outlier: false,
-      nftID,
+      nftId,
     },
   }).map((sale) => {
     const newSaleData = {
-      price: parseFloat(sale.etherValue),
+      price: sale.etherValue,
       id: sale.tokenId,
     };
     return newSaleData;
@@ -123,7 +123,7 @@ const getCurrentFloor = async (arr, floorQuntityOfSales) => {
 // calculate the price using Drops math
 // https://docs.drops.co/nft-price-oracle/overview
 const calcDropsMath = async (
-  nftID,
+  nftId,
   count = 100,
   lowerSD = 2,
   upperSD = 6,
@@ -131,7 +131,7 @@ const calcDropsMath = async (
 ) => {
   //Extreme Outliers Removal
   const { sales, enoughSaleData } = await getSalesExtremeOutliersRemoved(
-    nftID,
+    nftId,
     count
   );
 

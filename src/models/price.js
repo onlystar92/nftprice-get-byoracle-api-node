@@ -1,11 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
   const Price = sequelize.define('Price', {
-    nftID: {
+    nftId: {
       type: DataTypes.NUMBER,
       allowNull: false,
     },
     etherValue: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.FLOAT,
       allowNull: false,
     },
     roundId: {
@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
   Price.associate = function (models) {
-    models.Price.belongsTo(models.Nft, { foreignKey: 'nftID' });
+    models.Price.belongsTo(models.Nft, { foreignKey: 'nftId' });
   };
   return Price;
 };

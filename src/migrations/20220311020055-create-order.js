@@ -2,12 +2,16 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) =>
-    queryInterface.createTable('Prices', {
+    queryInterface.createTable('Orders', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
+      },
+      transactionHash: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       nftId: {
         type: Sequelize.INTEGER,
@@ -15,13 +19,15 @@ module.exports = {
       },
       etherValue: {
         type: Sequelize.FLOAT,
+        allowNull: false,
       },
-      roundId: {
-        type: Sequelize.INTEGER,
+      from: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
-      source: {
-        type: Sequelize.ENUM,
-        values: ['icy.tools', 'nftx', 'drops'],
+      to: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
@@ -32,5 +38,5 @@ module.exports = {
         type: Sequelize.DATE,
       },
     }),
-  down: (queryInterface, Sequelize) => queryInterface.dropTable('Prices'),
+  down: (queryInterface, Sequelize) => queryInterface.dropTable('Sales'),
 };

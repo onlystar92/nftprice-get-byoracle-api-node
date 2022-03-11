@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-  const Price = sequelize.define('Sale', {
-    nftID: {
+  const Sale = sequelize.define('Sale', {
+    nftId: {
       type: DataTypes.NUMBER,
       allowNull: false,
     },
@@ -8,15 +8,23 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    timestamp: {
+    blockTimestamp: {
       type: DataTypes.DATE,
       allowNull: false,
     },
     etherValue: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.FLOAT,
       allowNull: false,
     },
     transactionHash: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    from: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    to: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -24,9 +32,17 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
+    sameTokenIDSold: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    blockConfirmed: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
   });
-  Price.associate = function (models) {
-    models.Price.belongsTo(models.Nft, { foreignKey: 'nftID' });
+  Sale.associate = function (models) {
+    models.Sale.belongsTo(models.Nft, { foreignKey: 'nftId' });
   };
-  return Price;
+  return Sale;
 };
