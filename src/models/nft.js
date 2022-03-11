@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.NUMBER,
       allowNull: false,
     },
+    seed: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
   });
   Nft.associate = function (models) {
     // associations can be defined here

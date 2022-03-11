@@ -12,10 +12,12 @@ Once you clone or download project go into you folder
 npm install
 ```
 
-### Run pending migrations
+### Run pending migrations & seeds
+
+https://github.com/sequelize/cli
 
 ```
-node_modules/.bin/sequelize db:migrate
+npm run migrate
 ```
 
 ## API endpoints

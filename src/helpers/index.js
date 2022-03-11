@@ -24,7 +24,7 @@ export const errorResponse = (
 
 export const checkNFT = async (address, chainId) => {
   let nft = await Nft.findOne({
-    where: { address: contract, chainId },
+    where: { address, chainId },
   });
   if (nft === null) {
     nft = await Nft.create({
@@ -33,7 +33,18 @@ export const checkNFT = async (address, chainId) => {
       address,
       roundId: 0,
       dropsPrice: 0,
+      seed: false,
     });
   }
   return nft;
+};
+
+export const calcAverage = (arr) => {
+  const sum = arr.reduce((a, b) => a + b, 0);
+  return sum / arr.length || 0;
+};
+
+export const randomIntFromInterval = (min, max) => {
+  // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min);
 };

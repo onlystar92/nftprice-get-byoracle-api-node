@@ -6,7 +6,9 @@
   "scripts": {
     "test": "jest",
     "test:cover": "jest --coverage",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "migrate": "node_modules/.bin/sequelize db:migrate",
+    "seed": "node_modules/.bin/sequelize db:seed:all"
   },
   "author": "",
   "license": "ISC",
@@ -23,10 +25,12 @@
     "cluster": "^0.7.7",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "csv-parser": "^3.0.0",
     "dotenv": "^8.0.0",
     "express": "^4.16.4",
     "express-joi-validator": "^2.0.1",
     "express-validation": "^1.0.2",
+    "fs": "0.0.1-security",
     "graphql": "^16.2.0",
     "graphql-request": "^3.7.0",
     "http": "0.0.0",
