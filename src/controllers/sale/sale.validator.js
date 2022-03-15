@@ -24,13 +24,10 @@ export const addTransfer = {
 
 export const verifyTransaction = {
   body: {
-    transaction_hash: Joi.string().required(),
     block_timestamp: Joi.number().required(),
-    confirmations: Joi.number().required(),
   },
   query: {
-    nftId: Joi.string().required(),
-    tokenId: Joi.string().required(),
+    saleId: Joi.string().required(),
   },
 };
 
@@ -39,9 +36,9 @@ export const addSale = {
     transactionHash: Joi.string().required(),
     contract: Joi.string().required(),
     tokenId: Joi.string().required(),
+    chainId: Joi.strict().required(),
     blockTimestamp: Joi.string().required(),
     etherValue: Joi.string().required(),
-    chainId: Joi.strict().required(),
     from: Joi.strict().required(),
     to: Joi.strict().required(),
   },

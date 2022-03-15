@@ -1,5 +1,5 @@
 const seedData = {
-  BoredApeYachtClub: [
+  BoredApeYachtClub_1: [
     {
       blockTimestamp: '2021-09-03 04:02:26',
       tokenId: 8901,

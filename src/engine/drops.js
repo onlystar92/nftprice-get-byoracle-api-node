@@ -1,106 +1,4 @@
-import { Sale, Nft } from '../models';
-import { calcAverage } from '../helpers';
-
-// check if current price is outlier or not
-const checkSaleIfOutlier = async (nftId, price) => {
-  const sales = await Sale.findAll({
-    order: [['createdAt', 'DESC']],
-    offset: 0,
-    limit: 100,
-    where: {
-      outlier: false,
-      nftId,
-    },
-  });
-  const prevPrices = sales
-    .map((sale) => sale.etherValue)
-    .filter((price) => price !== 0);
-
-  if (prevPrices.length === 0) {
-    return false;
-  }
-  const averagePrice = calcAverage(prevPrices);
-  return price < averagePrice * 0.05 || price > averagePrice * 9.5;
-};
-
-// get valid sales without exterme outliers
-const getSalesExtremeOutliersRemoved = async (nftId, count) => {
-  const sales = await Sale.findAll({
-    order: [['createdAt', 'DESC']],
-    offset: 0,
-    limit: count,
-    where: {
-      outlier: false,
-      nftId,
-    },
-  }).map((sale) => {
-    const newSaleData = {
-      price: sale.etherValue,
-      id: sale.tokenId,
-    };
-    return newSaleData;
-  });
-
-  return {
-    sales,
-    enoughSaleData: sales.length >= count,
-  };
-};
-
-// get truncated mean(average price)
-const getTruncateMean = async (arr) => {
-  const lastArr = arr.slice(-50);
-
-  //sort array by sale size
-  lastArr.sort(function (a, b) {
-    if (a > b) return 1;
-    if (a < b) return -1;
-    return 0;
-  });
-
-  const midArr = lastArr.slice(3, 47);
-  return calcAverage(midArr);
-};
-
-// get sample standard deviation
-const getDeviation = async (arr, truncatedMean) => {
-  const lastArr = arr.slice(-50);
-  const midArr = lastArr.slice(3, 47);
-
-  let sum = 0;
-  for (let i = 0; i < midArr.length; i++)
-    sum += Math.pow(midArr[i] - truncatedMean, 2);
-
-  const deviation = Math.sqrt(sum / (midArr.length - 1));
-
-  // when lower standard deviation bound can't be lower than 20% of the trimmed mean value.
-  if (deviation > truncatedMean * 0.2) {
-    return deviation;
-  }
-  return truncatedMean;
-};
-
-// remove probable outliers and get valid sales
-const removeProbableOutliers = async (arr, minX, maxX) => {
-  const validSalesArr = [];
-
-  const truncatedMean = await getTruncateMean(arr.map((s) => s.price));
-  const s = await getDeviation(
-    arr.map((s) => s.price),
-    truncatedMean
-  );
-
-  for (let i = 0; i < arr.length; i++) {
-    if (
-      arr[i].price >= truncatedMean - minX * s &&
-      arr[i].price <= truncatedMean + maxX * s
-    ) {
-      validSalesArr.push(arr[i]);
-    }
-  }
-
-  return validSalesArr;
-};
+import { getSalesExtremeOutliersRemoved } from './outlier';
 
 // get floorPrice (minimum price) of the last nth sales
 const getCurrentFloor = async (arr, floorQuntityOfSales) => {
@@ -120,19 +18,64 @@ const getCurrentFloor = async (arr, floorQuntityOfSales) => {
   return Math.min(...prices);
 };
 
+// get sample standard deviation
+const getDeviation = async (arr, minTrime, truncatedMean) => {
+  const lastArr = arr.slice(-50);
+  const midArr = lastArr.slice(3, 47);
+
+  let sum = 0;
+  for (let i = 0; i < midArr.length; i++) {
+    sum += Math.pow(midArr[i] - truncatedMean, 2);
+  }
+
+  const deviation = Math.sqrt(sum / (midArr.length - 1));
+
+  // when lower standard deviation bound can't be lower than 20% of the trimmed mean value.
+  if (deviation > truncatedMean * minTrime) {
+    return deviation;
+  }
+  return truncatedMean;
+};
+
+// remove probable outliers and get valid sales
+const removeProbableOutliers = async (
+  arr,
+  minX,
+  maxX,
+  minTrime,
+  truncatedMean
+) => {
+  const validSalesArr = [];
+  const prices = arr.map((s) => s.price);
+
+  const s = await getDeviation(prices, minTrime, truncatedMean);
+
+  for (let i = 0; i < arr.length; i++) {
+    if (
+      arr[i].price >= truncatedMean - minX * s &&
+      arr[i].price <= truncatedMean + maxX * s
+    ) {
+      validSalesArr.push(arr[i]);
+    }
+  }
+
+  return validSalesArr;
+};
+
 // calculate the price using Drops math
 // https://docs.drops.co/nft-price-oracle/overview
-const calcDropsMath = async (
+export const calcDropsMath = async (
   nftId,
-  count = 100,
   lowerSD = 2,
   upperSD = 6,
-  floorQuntityOfSales = 10
+  floorQuntityOfSales = 10,
+  minTrime = 0.2,
+  truncatedMean
 ) => {
   //Extreme Outliers Removal
   const { sales, enoughSaleData } = await getSalesExtremeOutliersRemoved(
     nftId,
-    count
+    100
   );
 
   if (!enoughSaleData) {
@@ -140,7 +83,13 @@ const calcDropsMath = async (
   }
 
   //Probable Outliers Removal
-  const probableRemoval = await removeProbableOutliers(sales, lowerSD, upperSD);
+  const probableRemoval = await removeProbableOutliers(
+    sales,
+    lowerSD,
+    upperSD,
+    minTrime,
+    truncatedMean
+  );
 
   //Get Current Floor
   const floorPrice = await getCurrentFloor(
@@ -150,5 +99,3 @@ const calcDropsMath = async (
 
   return floorPrice;
 };
-
-module.exports = { checkSaleIfOutlier, calcDropsMath };

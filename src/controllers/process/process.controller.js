@@ -1,31 +1,30 @@
 import { Nft, Sale } from '../../models';
-import { successResponse, errorResponse, checkNFT } from '../../helpers';
-import { calcDropsMath } from '../../engine/drops';
+import { successResponse, errorResponse } from '../../helpers';
+import { updateTruncatedMean } from '../../engine/truncate';
+import {
+  calculateDropsFloorPrice,
+  calculateDropsTWAPValue,
+} from '../../engine/cron';
 import seedData from '../../../data/seed';
 
 export const calcFloorPrice = async (req, res) => {
-  const allNfts = await Nft.findAll();
+  try {
+    await calculateDropsFloorPrice();
 
-  for (let i = 0; i < allNfts.length; i++) {
-    const nft = allNfts[i];
-
-    if (nft.seed) {
-      const newPrice = await calcDropsMath(nft.id);
-
-      console.log('====>newPrice', newPrice);
-      // if (newPrice > 0) {
-      //   await Price.create({
-      //     nftId: nft.id,
-      //     etherValue: newPrice,
-      //     roundId: nft.roundId,
-      //     source: 'drops',
-      //   });
-      // }
-    }
+    return successResponse(req, res, {});
+  } catch (error) {
+    return errorResponse(req, res, error.message);
   }
+};
 
-  console.log('===>calcDropsFloorPrice');
-  return successResponse(req, res, {});
+export const calcTWAPPrice = async (req, res) => {
+  try {
+    await calculateDropsTWAPValue();
+
+    return successResponse(req, res, {});
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
 };
 
 export const seedSales = async (req, res) => {
@@ -34,12 +33,11 @@ export const seedSales = async (req, res) => {
 
     for (let i = 0; i < allNfts.length; i++) {
       const nft = allNfts[i];
+      const dataKey = `${nft.name}_${nft.chainId}`;
 
       if (!nft.seed) {
-        const { name } = nft;
-
-        if (seedData[name]) {
-          const rawData = seedData[name].map((item) => {
+        if (seedData[dataKey]) {
+          const rawData = seedData[dataKey].map((item) => {
             const newItem = {
               nftId: nft.id,
               tokenId: item.tokenId,
@@ -48,7 +46,7 @@ export const seedSales = async (req, res) => {
               transactionHash: item.transactionHash || '',
               from: item.from || '',
               to: item.from || '',
-              outlier: false,
+              extreamOutlier: false,
               sameTokenIDSold: false,
               blockConfirmed: true,
             };
@@ -56,11 +54,13 @@ export const seedSales = async (req, res) => {
           });
 
           if (rawData.length > 0) {
-            await Sale.bulkCreate(rawData).then(async () => {
-              await nft.update({
-                ...nft,
-                seed: true,
-              });
+            await Sale.bulkCreate(rawData);
+
+            await updateTruncatedMean(nft.id);
+
+            await nft.update({
+              ...nft,
+              seed: true,
             });
           }
         }

@@ -53,6 +53,7 @@ router.post(
 
 // for test
 router.post('/process/calcFloorPrice', process.calcFloorPrice);
+router.post('/process/calcTWAPPrice', process.calcTWAPPrice);
 router.post('/process/seed', process.seedSales);
 
 module.exports = router;

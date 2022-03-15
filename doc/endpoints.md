@@ -45,7 +45,7 @@ curl -X GET -H 'Content-Type: application/json' http://localhost:8082/api/v1/nft
 
 ```
 curl -X POST -H 'Content-Type: application/json' http://localhost:8082/api/v1/nfts?api_key=Dcopvom3X039 -d '{
-    "chainId": "4",
+    "chainId": "1",
     "name": "BoredApeYachtClub",
     "address": "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
 }'
@@ -55,7 +55,7 @@ curl -X POST -H 'Content-Type: application/json' http://localhost:8082/api/v1/nf
 
 ```
 curl -X PUT -H 'Content-Type: application/json' http://localhost:8082/api/v1/nfts/1?api_key=Dcopvom3X039 -d '{
-"chainId": "4",
+"chainId": "1",
 "name": "BoredApeYachtClub",
 "address": "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
 }'
@@ -70,19 +70,19 @@ curl -X DELETE -H 'Content-Type: application/json' http://localhost:8082/api/v1/
 ### GET /api/v1/price
 
 ```
-curl -X GET -H 'Content-Type: application/json' 'http://localhost:8082/api/v1/price?api_key=Dcopvom3X039&chainId=4&address=0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d'
+curl -X GET -H 'Content-Type: application/json' 'http://localhost:8082/api/v1/price?chainId=1&address=0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d&api_key=Dcopvom3X039'
 ```
 
 ### POST /api/v1/orders
 
 ```
 curl -X POST -H 'Content-Type: application/json' 'http://localhost:8082/api/v1/orders?api_key=Dcopvom3X039' -d '{
-    "transactionHash": "0xc6cfbc270da5784ccaa2eab3748c6714d66073c40ff54731d188cd3014a7c2d3",
+    "transactionHash": "0x0ceeb65f82148d425b52065087333a595fe4f209658294c6b12de4a83717d747",
     "contract": "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
-    "etherValue": "100",
-    "chainId": "4",
-    "maker": "0xed36b17651229475a8eefbb64b706c18aafd4311",
-    "taker": "0x558dc4f8e08dd24f728644a0dd60e5693233c889"
+    "etherValue": "106690000000000000000",
+    "chainId": "1",
+    "maker": "0x7155cdd3efe712cd9805e5f58ff4f40868fed12e",
+    "taker": "0xf8c0c9c73a07fe850cca85f22ff31aa60a81780a"
 }'
 ```
 
@@ -90,20 +90,20 @@ curl -X POST -H 'Content-Type: application/json' 'http://localhost:8082/api/v1/o
 
 ```
 curl -X POST -H 'Content-Type: application/json' 'http://localhost:8082/api/v1/transfers?api_key=Dcopvom3X039' -d '{
-    "transactionHash": "0xc6cfbc270da5784ccaa2eab3748c6714d66073c40ff54731d188cd3014a7c2d3",
+    "transactionHash": "0x0ceeb65f82148d425b52065087333a595fe4f209658294c6b12de4a83717d747",
     "contract": "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
-    "tokenId": "5448",
-    "chainId": "4",
-    "from": "0xed36b17651229475a8eefbb64b706c18aafd4311",
-    "to": "0x558dc4f8e08dd24f728644a0dd60e5693233c889"
+    "tokenId": "9546",
+    "chainId": "1",
+    "from": "0x7155cdd3efe712cd9805e5f58ff4f40868fed12e",
+    "to": "0xf8c0c9c73a07fe850cca85f22ff31aa60a81780a"
 }'
 ```
 
 ### POST /api/v1/verify
 
 ```
-curl -X POST -H 'Content-Type: application/json' 'http://localhost:8082/api/v1/verifytransaction?api_key=Dcopvom3X039&nftId=1&tokenId=5448' -d '{
-    "transaction_hash": "0xc6cfbc270da5784ccaa2eab3748c6714d66073c40ff54731d188cd3014a7c2d3",
+curl -X POST -H 'Content-Type: application/json' 'http://localhost:8082/api/v1/verifytransaction?api_key=Dcopvom3X039&saleId=1' -d '{
+    "transaction_hash": "0x0ceeb65f82148d425b52065087333a595fe4f209658294c6b12de4a83717d747",
     "block_timestamp":  1644505503,
     "confirmations": 25
 }'
@@ -115,8 +115,28 @@ curl -X POST -H 'Content-Type: application/json' 'http://localhost:8082/api/v1/v
 curl -X POST -H 'Content-Type: application/json' http://localhost:8082/api/v1/process/calcFloorPrice?api_key=Dcopvom3X039
 ```
 
+### POST calculateDropsTWAPValue
+
+```
+curl -X POST -H 'Content-Type: application/json' http://localhost:8082/api/v1/process/calcTWAPPrice?api_key=Dcopvom3X039
+```
+
 ### POST seed
 
 ```
 curl -X POST -H 'Content-Type: application/json' http://localhost:8082/api/v1/process/seed?api_key=Dcopvom3X039
+```
+
+### Parsiq Tx Lifecycle API
+
+```
+curl --location --request POST 'https://api.parsiq.net/v1/transaction-lifecycle' \
+--header 'Authorization: Bearer c9f2b8f57069cef1db803600e8a7d8ad6cb3b3f1b71860aeb60b70a48ec32934' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "tx_hash": "0x0ceeb65f82148d425b52065087333a595fe4f209658294c6b12de4a83717d747",
+    "callback_url": "https://8f8f-217-150-72-243.ngrok.io/api/v1/verifytransaction?api_key=Dcopvom3X039&nftId=1&tokenId=9546",
+    "confirmations": 12,
+    "chain_id": "eip155:1"
+}'
 ```

@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
+    truncatedMean: {
+      type: DataTypes.NUMBER,
+      allowNull: false,
+    },
   });
   Nft.associate = function (models) {
     // associations can be defined here
