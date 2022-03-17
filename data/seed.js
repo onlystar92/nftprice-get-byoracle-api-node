@@ -1,6 +1,8 @@
 const seedData = {
   BoredApeYachtClub_1: [
     {
+      transactionHash:
+        '0x23c29f10ac537599531f213d91f2b17ba098e85bb25594babe71e8d6762815e5',
       blockTimestamp: '2021-09-03 04:02:26',
       tokenId: 8901,
       sellPrice: 45,

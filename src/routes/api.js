@@ -14,14 +14,9 @@ router.get('/price', validate(nftValidator.getPrice), nftController.getPrice);
 
 // for parsiq
 router.post(
-  '/orders',
-  validate(saleValidator.addOrder),
-  saleController.addOrder
-);
-router.post(
-  '/transfers',
-  validate(saleValidator.addTransfer),
-  saleController.addTransfer
+  '/sales',
+  validate(saleValidator.addSaleFromParsiq),
+  saleController.addSaleFromParsiq
 );
 router.post(
   '/verifytransaction',
@@ -45,15 +40,15 @@ router.delete(
 );
 
 router.get('/sales', saleController.allSales);
-router.post(
-  '/sales/new',
-  validate(saleValidator.addSale),
-  saleController.addSale
-);
 
 // for test
 router.post('/process/calcFloorPrice', process.calcFloorPrice);
 router.post('/process/calcTWAPPrice', process.calcTWAPPrice);
 router.post('/process/seed', process.seedSales);
+router.post(
+  '/process/insertSale',
+  validate(process.insertSale),
+  process.insertSale
+);
 
 module.exports = router;

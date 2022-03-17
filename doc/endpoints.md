@@ -73,29 +73,18 @@ curl -X DELETE -H 'Content-Type: application/json' http://localhost:8082/api/v1/
 curl -X GET -H 'Content-Type: application/json' 'http://localhost:8082/api/v1/price?chainId=1&address=0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d&api_key=Dcopvom3X039'
 ```
 
-### POST /api/v1/orders
+### POST /api/v1/sales
 
 ```
-curl -X POST -H 'Content-Type: application/json' 'http://localhost:8082/api/v1/orders?api_key=Dcopvom3X039' -d '{
-    "transactionHash": "0x0ceeb65f82148d425b52065087333a595fe4f209658294c6b12de4a83717d747",
-    "contract": "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
-    "etherValue": "106690000000000000000",
-    "chainId": "1",
-    "maker": "0x7155cdd3efe712cd9805e5f58ff4f40868fed12e",
-    "taker": "0xf8c0c9c73a07fe850cca85f22ff31aa60a81780a"
-}'
-```
-
-### POST /api/v1/transfer
-
-```
-curl -X POST -H 'Content-Type: application/json' 'http://localhost:8082/api/v1/transfers?api_key=Dcopvom3X039' -d '{
-    "transactionHash": "0x0ceeb65f82148d425b52065087333a595fe4f209658294c6b12de4a83717d747",
+curl -X POST -H 'Content-Type: application/json' 'http://localhost:8082/api/v1/sales?api_key=Dcopvom3X039' -d '{
+    "transactionHash": "0xf98c0ec55cb018c3d98d1c6ccb146ed06caeabafb26f625c726c7a1c34e95659",
     "contract": "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
     "tokenId": "9546",
     "chainId": "1",
     "from": "0x7155cdd3efe712cd9805e5f58ff4f40868fed12e",
-    "to": "0xf8c0c9c73a07fe850cca85f22ff31aa60a81780a"
+    "to": "0xf8c0c9c73a07fe850cca85f22ff31aa60a81780a",
+    "etherValue": "109999900000000000000",
+    "datetime": "2022-03-17T01:40:44"
 }'
 ```
 

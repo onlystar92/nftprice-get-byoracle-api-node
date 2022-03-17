@@ -66,12 +66,8 @@ export const removeNft = async (req, res) => {
           nftId: id,
         },
       });
+
       await Price.destroy({
-        where: {
-          nftId: id,
-        },
-      });
-      await Transaction.destroy({
         where: {
           nftId: id,
         },

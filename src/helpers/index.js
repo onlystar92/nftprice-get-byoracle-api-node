@@ -34,6 +34,7 @@ export const checkNFT = async (address, chainId) => {
       roundId: 1,
       dropsPrice: 0,
       seed: false,
+      truncatedMean: 0,
     });
   }
   return nft;

@@ -34,6 +34,7 @@ export const seedSales = async (req, res) => {
     for (let i = 0; i < allNfts.length; i++) {
       const nft = allNfts[i];
       const dataKey = `${nft.name}_${nft.chainId}`;
+      console.log('===>dataKey', dataKey);
 
       if (!nft.seed) {
         if (seedData[dataKey]) {
@@ -52,12 +53,13 @@ export const seedSales = async (req, res) => {
             };
             return newItem;
           });
+          console.log('===>rawData', rawData.length);
 
           if (rawData.length > 0) {
-            await Sale.bulkCreate(rawData);
-
+            await Sale.bulkCreate(rawData, {
+              updateOnDuplicate: ['transactionHash'],
+            });
             await updateTruncatedMean(nft.id);
-
             await nft.update({
               ...nft,
               seed: true,
@@ -66,6 +68,47 @@ export const seedSales = async (req, res) => {
         }
       }
     }
+
+    return successResponse(req, res, {});
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+};
+
+export const insertSale = async (req, res) => {
+  try {
+    const {
+      transactionHash,
+      contract,
+      chainId,
+      tokenId,
+      blockTimestamp,
+      etherValue,
+      from,
+      to,
+    } = req.body;
+
+    const nft = await checkNFT(contract, chainId);
+
+    const sale = await Sale.findOne({
+      where: { transactionHash, nftId: nft.id },
+    });
+
+    if (sale !== null) {
+      return errorResponse(req, res, 'Sale already exists ');
+    }
+
+    await addSaleWithVerification(
+      nftId,
+      tokenId,
+      blockTimestamp,
+      etherValue,
+      transactionHash,
+      from,
+      to,
+      true,
+      false // sameTokenIDSold
+    );
 
     return successResponse(req, res, {});
   } catch (error) {

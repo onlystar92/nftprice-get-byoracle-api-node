@@ -1,54 +1,28 @@
-import axios from 'axios';
 import { utils } from 'web3';
 
-import { Order, Sale } from '../../models';
+import { Sale } from '../../models';
 import { successResponse, errorResponse, checkNFT } from '../../helpers';
-import { addSaleWithVerification } from '../../engine/sale';
+import {
+  checkIfSameTokenIdIsSoldWithADay,
+  addSaleWithVerification,
+} from '../../engine/sale';
+import { requestVerifyTxBlockConfirm } from '../../engine/parsiq';
+import { updateTruncatedMean } from '../../engine/truncate';
 
-export const addOrder = async (req, res) => {
+export const addSaleFromParsiq = async (req, res) => {
   try {
-    const { transactionHash, contract, etherValue, chainId, maker, taker } =
-      req.body;
+    const {
+      transactionHash,
+      contract,
+      from,
+      to,
+      chainId,
+      tokenId,
+      etherValue,
+      datetime,
+    } = req.body;
 
     const nft = await checkNFT(contract, chainId);
-
-    const sameOrder = await Order.findOne({
-      where: { transactionHash, nftId: nft.id },
-    });
-
-    if (sameOrder == null) {
-      console.log('addOrder');
-
-      const payload = {
-        transactionHash,
-        etherValue: utils.fromWei(etherValue),
-        from: maker,
-        to: taker,
-        nftId: nft.id,
-      };
-      await Order.create(payload);
-    }
-
-    return successResponse(req, res, {});
-  } catch (error) {
-    return errorResponse(req, res, error.message);
-  }
-};
-
-export const addTransfer = async (req, res) => {
-  try {
-    const { transactionHash, contract, from, to, chainId, tokenId } = req.body;
-
-    const nft = await checkNFT(contract, chainId);
-
-    const order = await Order.findOne({
-      where: {
-        transactionHash,
-        from,
-        to,
-        nftId: nft.id,
-      },
-    });
 
     const sameSale = await Sale.findOne({
       where: {
@@ -60,43 +34,32 @@ export const addTransfer = async (req, res) => {
       },
     });
 
-    if (order != null && sameSale == null) {
+    if (sameSale == null) {
+      await updateTruncatedMean(nft.id);
+
+      const sameTokenIDSold = await checkIfSameTokenIdIsSoldWithADay(
+        nft.id,
+        tokenId,
+        new Date(datetime)
+      );
+
+      const blockConfirmed = await requestVerifyTxBlockConfirm(
+        transactionHash,
+        `${process.env.API_END_POINT}/api/v1/verifytransaction?api_key=${process.env.DROP_API_KEY}&saleId=${saleId}`,
+        chainId
+      );
+
       const saleId = await addSaleWithVerification(
         nft.id,
         tokenId,
-        new Date(),
-        order.etherValue,
+        new Date(datetime),
+        utils.fromWei(etherValue),
         transactionHash,
         from,
         to,
-        false,
-        true
+        blockConfirmed, // block confirm
+        sameTokenIDSold
       );
-
-      // request verification
-      const callBackURL = `${process.env.API_END_POINT}/api/v1/verifytransaction?api_key=${process.env.DROP_API_KEY}&saleId=${saleId}`;
-
-      const options = {
-        method: 'POST',
-        url: 'https://api.parsiq.net/v1/transaction-lifecycle',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.PARSIQ_API_KEY}`,
-        },
-        data: {
-          tx_hash: transactionHash,
-          callback_url: callBackURL,
-          confirmations: 12,
-          chain_id: process.env.PARSIQ_CHAIN_ID,
-        },
-      };
-
-      try {
-        const parsiqRes = await axios.request(options);
-        console.log('=======>parsiq verify API request success');
-      } catch (e) {
-        console.log('=======>parsiq verify API request failed');
-      }
     }
 
     return successResponse(req, res, {});
@@ -107,26 +70,16 @@ export const addTransfer = async (req, res) => {
 
 export const verifyTransaction = async (req, res) => {
   try {
-    const { block_timestamp } = req.body;
     const { saleId } = req.query;
 
     const sale = await Sale.findbyP(saleId);
 
     if (sale !== null) {
-      console.log('verifyTransaction is calling');
-
-      const blockTimestamp = new Date(block_timestamp * 1000);
-      const sameTokenIDSold = await checkIfSameTokenIdIsSoldWithADay(
-        sale.nftId,
-        sale.tokenId,
-        blockTimestamp
-      );
+      console.log('verify blocks is calling');
 
       await sale.update({
         ...sale,
         blockConfirmed: true,
-        sameTokenIDSold,
-        blockTimestamp,
       });
     }
 
@@ -147,47 +100,6 @@ export const allSales = async (req, res) => {
     });
 
     return successResponse(req, res, rows);
-  } catch (error) {
-    return errorResponse(req, res, error.message);
-  }
-};
-
-export const addSale = async (req, res) => {
-  try {
-    const {
-      transactionHash,
-      contract,
-      chainId,
-      tokenId,
-      blockTimestamp,
-      etherValue,
-      from,
-      to,
-    } = req.body;
-
-    const nft = await checkNFT(contract, chainId);
-
-    const sale = await Sale.findOne({
-      where: { transactionHash, nftId: nft.id },
-    });
-
-    if (sale !== null) {
-      return errorResponse(req, res, 'Sale already exists ');
-    }
-
-    await addSaleWithVerification(
-      nftId,
-      tokenId,
-      blockTimestamp,
-      etherValue,
-      transactionHash,
-      from,
-      to,
-      true,
-      false // sameTokenIDSold
-    );
-
-    return successResponse(req, res, {});
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
