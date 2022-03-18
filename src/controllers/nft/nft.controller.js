@@ -138,10 +138,11 @@ export const getPrice = async (req, res) => {
     if (nft) {
       return successResponse(req, res, {
         // name: nft.name,
-        // address,
-        // chainId,
-        // roundId: nft.roundId,
-        dropsEtherValue: nft.dropsPrice,
+        address,
+        chainId,
+        roundId: nft.roundId,
+        etherPrice: nft.dropsPrice,
+        result: nft.dropsPrice,
       });
     }
 
